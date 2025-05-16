@@ -37,8 +37,40 @@ public class Test {
         Function<String, String> function2 = (s) -> "this is function2 " + s;
 
         Function<String, String> function3 = function1.andThen(function2);
+        Thread longRunningThread = new Thread(() -> {
+            System.out.println("Long running thread started");
+            // Sleep for 5 seconds
+            sleep(5000);
+            System.out.println("Long running thread finished");
+        });
 
-        Thread t1 = new Thread(() -> System.out.println("thread started "));
-        t1.start();
+        // Create second thread with shorter execution time
+        Thread shortRunningThread = new Thread(() -> {
+            System.out.println("Short running thread started");
+            sleep(1000);
+            System.out.println("Short running thread finished");
+        });
+
+        // Start both threads
+        longRunningThread.start();
+        shortRunningThread.start();
+
+        // Wait for short thread to finish
+        sleep(2000);
+Thread.currentThread().getPriority();
+        // Check if threads are alive
+        boolean isLongThreadAlive = longRunningThread.isAlive();
+        boolean isShortThreadAlive = shortRunningThread.isAlive();
+
+        System.out.println("Long running thread is alive: " + isLongThreadAlive);   // true
+        System.out.println("Short running thread is alive: " + isShortThreadAlive); // false
+    }
+
+    static void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
